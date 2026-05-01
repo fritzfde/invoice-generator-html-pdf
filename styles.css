@@ -1,0 +1,94 @@
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 0;
+  padding: 100px 50px 100px 100px;
+  width: 595px;
+  display: flex;
+  flex-direction: column;
+}
+.sender-line {
+  text-align: left;
+  margin-bottom: 20px;
+  font-size: 11px;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 100px;
+  margin-bottom: 40px;
+}
+.recipient {
+  margin-bottom: 10px;
+  text-align: left;
+}
+.sender {
+  text-align: left;
+}
+.sender .date {
+  margin-top: 20px;
+  text-align: right;
+}
+.date {
+  text-align: right;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+.number {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+.contract {
+  margin-bottom: 20px;
+}
+.greeting {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.text1 {
+  margin-bottom: 5px;
+}
+.text2 {
+  margin-bottom: 20px;
+}
+.table {
+  width: 100%;
+  margin-bottom: 30px;
+}
+.table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th, .table td {
+  padding: 8px;
+  text-align: left;
+  font-size: 12px;
+  vertical-align: top;
+}
+.table td p {
+  margin: 0 0 5px 0;
+}
+.totals {
+  text-align: right;
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+.notes {
+  margin-bottom: 50px;
+  font-size: 12px;
+}
+.payment-section {
+  position: fixed;
+  bottom: 50px;
+  left: 100px;
+  right: 100px;
+}
+.payment-line {
+  width: 100%;
+  border: none;
+  border-top: 1px solid black;
+  margin-bottom: 10px;
+}
+.payment {
+  font-size: 10px;
+}
