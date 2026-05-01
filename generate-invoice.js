@@ -18,35 +18,39 @@ async function generateInvoice(jsonPath, outputPath) {
     page.drawText(text, { x, y, size, font, color: rgb(0, 0, 0) });
   }
 
-  // Sender info (top left)
-  drawText(data.sender.name, 50, height - 50, { bold: true });
-  drawText(data.sender.address, 50, height - 65);
-  drawText(data.sender.zip_city, 50, height - 80);
-  drawText(`Telefon: ${data.sender.phone}`, 50, height - 95);
-  drawText(`E-Mail: ${data.sender.email}`, 50, height - 110);
-  drawText(`USt-IdNr.: ${data.sender.ust_id}`, 50, height - 125);
+  // Helper function to draw right-aligned text
+  function drawTextRight(text, x, y, options = {}) {
+    const font = options.bold ? helveticaBold : helvetica;
+    const size = options.size || 10;
+    const textWidth = font.widthOfTextAtSize(text, size);
+    page.drawText(text, { x: x - textWidth, y, size, font, color: rgb(0, 0, 0) });
+  }
 
-  // Recipient info (top right)
-  drawText(data.recipient.company, 300, height - 50, { bold: true });
-  drawText(data.recipient.department, 300, height - 65);
-  drawText(data.recipient.address, 300, height - 80);
-  drawText(data.recipient.zip_city, 300, height - 95);
-  drawText(data.recipient.email, 300, height - 110);
+  // Sender info (top right)
+  drawText(data.sender.name, 300, height - 50, { bold: true });
+  drawText(data.sender.address, 300, height - 65);
+  drawText(data.sender.zip_city, 300, height - 80);
+  drawText(`Telefon: ${data.sender.phone}`, 300, height - 95);
+  drawText(`E-Mail: ${data.sender.email}`, 300, height - 110);
+  drawText(`USt-IdNr.: ${data.sender.ust_id}`, 300, height - 125);
 
-  // Invoice header
-  drawText('Rechnung', 250, height - 150, { bold: true, size: 16 });
+  // Recipient info (top left)
+  drawText(data.recipient.company, 50, height - 50, { bold: true });
+  drawText(data.recipient.department, 50, height - 65);
+  drawText(data.recipient.address, 50, height - 80);
+  drawText(data.recipient.zip_city, 50, height - 95);
+  drawText(data.recipient.email, 50, height - 110);
 
-  drawText(`Rechnungsdatum: ${data.invoice.date}`, 50, height - 180, { bold: true });
-  drawText(`Rechnungsnummer: ${data.invoice.number}`, 50, height - 195, { bold: true });
-  drawText(`Projekteinzelvertrag Nr. ${data.contract.project_contract}`, 50, height - 210, { bold: true });
-  drawText(`zum Rahmenvertrag vom ${data.contract.framework_contract_date}`, 50, height - 225);
+  drawTextRight(`Rechnungsdatum: ${data.invoice.date}`, width - 50, height - 150, { bold: true });
+  drawText(`Rechnungsnummer: ${data.invoice.number} Projekteinzelvertrag Nr. ${data.contract.project_contract}`, 50, height - 165, { bold: true });
+  drawText(`zum Rahmenvertrag vom ${data.contract.framework_contract_date}`, 50, height - 180);
 
-  drawText('Sehr geehrte Damen und Herren,', 50, height - 250);
-  drawText(`gemäß Projekteinzelvertrag Nr. ${data.contract.project_contract} erlaube ich mir, Ihnen für den Leistungszeitraum`, 50, height - 265);
-  drawText(`${data.invoice.performance_period} folgende Rechnung zu stellen:`, 50, height - 280);
+  drawText('Sehr geehrte Damen und Herren,', 50, height - 200);
+  drawText(`gemäß Projekteinzelvertrag Nr. ${data.contract.project_contract} erlaube ich mir, Ihnen für den Leistungszeitraum`, 50, height - 215);
+  drawText(`${data.invoice.performance_period} folgende Rechnung zu stellen:`, 50, height - 230);
 
   // Table header
-  const tableY = height - 320;
+  const tableY = height - 270;
   drawText('Pos.', 50, tableY, { bold: true });
   drawText('Beschreibung', 80, tableY, { bold: true });
   drawText('Stunden', 350, tableY, { bold: true });
