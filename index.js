@@ -1,3 +1,5 @@
+
+
 const fs = require('fs');
 const { getDocument } = require('pdfjs-dist');
 const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
@@ -30,7 +32,45 @@ async function extractTextItems(pdfPath) {
     textItems.push(...items);
   }
 
-  return textItems;
+  // Merge adjacent text items on the same line
+  const mergedTextItems = [];
+  const groupedByPage = {};
+  textItems.forEach(item => {
+    if (!groupedByPage[item.pageIndex]) groupedByPage[item.pageIndex] = [];
+    groupedByPage[item.pageIndex].push(item);
+  });
+
+  for (const pageIndex in groupedByPage) {
+    const pageItems = groupedByPage[pageIndex].sort((a, b) => a.y - b.y || a.x - b.x);
+    const merged = [];
+    let currentGroup = [pageItems[0]];
+
+    for (let i = 1; i < pageItems.length; i++) {
+      const prev = currentGroup[currentGroup.length - 1];
+      const curr = pageItems[i];
+      if (Math.abs(prev.y - curr.y) < 5 && curr.x > prev.x - 10) { // Same line, consecutive
+        currentGroup.push(curr);
+      } else {
+        merged.push(mergeGroup(currentGroup));
+        currentGroup = [curr];
+      }
+    }
+    merged.push(mergeGroup(currentGroup));
+    mergedTextItems.push(...merged);
+  }
+
+  function mergeGroup(group) {
+    if (group.length === 1) return group[0];
+    const merged = { ...group[0] };
+    merged.text = group.map(g => g.text).join('');
+    merged.width = group.reduce((sum, g) => sum + g.width, 0);
+    return merged;
+  }
+
+  console.log('Merged text items:', mergedTextItems.slice(0, 10)); // Log first 10 for debugging
+  const uniqueFonts = [...new Set(mergedTextItems.map(item => item.fontName))];
+  console.log('Unique font names:', uniqueFonts);
+  return mergedTextItems;
 }
 
 // Function to get page sizes from PDF

@@ -1,7 +1,7 @@
 {
-  "Max Mustermann": "Alex Demian\n12529 Rathausgasse 19\n12529 Schönefeld bei Berlin",
+  "Max Mustermann": "Alex Demian",
   "MUSTER": "",
-  "Example Address": "",
+  "Example Address": "12529 Rathausgasse 19, 12529 Schönefeld bei Berlin",
   "Auftragnehmer": "Alex Demian",
   "Auftraggeber": "Constaff GmbH",
   "Projekteinzelvertrag Nr.": "14085 01/01",
@@ -23,12 +23,15 @@
   "Fax": "",
   "01234 Musterhausen": "12529 Schönefeld bei Berlin",
   "Musterstraße 1": "Rathausgasse 19",
-  "Rechnungsdatum": "01.05.2026",
+  "Rechnungsdatum: 01.01.2018": "Rechnungsdatum: 01.05.2026",
   "Seite 1 von 1": "",
   "USt-IdNr.": "01281141582",
   "Sparkasse Musterhausen": "Frankfurter Sparkasse",
   "Rechnung Nr. 2018-00x": "Rechnungsnummer: 2026-04-001",
   "Projekt bei Firma XY - Projekteinzelvertrag Nr. 01234": "Projekteinzelvertrag Nr. 14085 01/01\nzum Rahmenvertrag vom 19.03.2026",
   "gemäß Projekteinzelvertrag Nr. 01234, erlaube ich mir Ihnen für den Leistungszeitraum": "gemäß Projekteinzelvertrag Nr. 14085 01/01 erlaube ich mir, Ihnen für den Leistungszeitraum",
-  "01.Januar – 31.Januar 2018": "13.04.2026 – 30.04.2026"
+  "01.Januar – 31.Januar 2018": "13.04.2026 – 30.04.2026",
+  "01.01.2018": "01.05.2026",
+  "2018": "2026",
+  "2014": "2026"
 }
