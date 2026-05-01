@@ -102,7 +102,7 @@ async function fillPDFTemplate(inputPath, outputPath, replacementsPath, docxPath
       const items = itemsByPage[pageIndex] || [];
 
       items.forEach(item => {
-        const font = item.fontName.includes('Bold') ? helveticaBold : helvetica;
+        const font = item.fontName.toLowerCase().includes('bold') ? helveticaBold : helvetica;
         page.drawText(item.text, {
           x: item.x,
           y: item.y,
