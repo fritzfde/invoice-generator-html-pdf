@@ -92,6 +92,9 @@ function replaceText(textItems, replacements) {
       if (replacement === '') {
         return null; // Skip this item
       }
+      if (typeof replacement === 'object') {
+        return { ...item, text: replacement.text, forceBold: replacement.bold };
+      }
       return { ...item, text: replacement };
     }
     return item;
@@ -142,7 +145,7 @@ async function fillPDFTemplate(inputPath, outputPath, replacementsPath, docxPath
       const items = itemsByPage[pageIndex] || [];
 
       items.forEach(item => {
-        const font = item.fontName.toLowerCase().includes('bold') ? helveticaBold : helvetica;
+        const font = (item.fontName.toLowerCase().includes('bold') || item.forceBold) ? helveticaBold : helvetica;
         page.drawText(item.text, {
           x: item.x,
           y: item.y,
