@@ -1,0 +1,53 @@
+{
+  "invoice": {
+    "number": "2026-04-001",
+    "date": "01.05.2026",
+    "performance_period": "13.04.2026 – 30.04.2026"
+  },
+  "contract": {
+    "project_contract": "14085 01/01",
+    "framework_contract_date": "19.03.2026"
+  },
+  "sender": {
+    "name": "Alex Demian",
+    "address": "Rathausgasse 19",
+    "zip_city": "12529 Schönefeld bei Berlin",
+    "phone": "+49 151 2888 2881",
+    "email": "alexdemian.de@gmail.com",
+    "ust_id": "DE01281141582"
+  },
+  "recipient": {
+    "company": "Constaff GmbH",
+    "department": "Rechnungswesen",
+    "address": "Galileistraße 1-3",
+    "zip_city": "D-69115 Heidelberg",
+    "email": "kai.zauner@constaff.com"
+  },
+  "items": [
+    {
+      "position": 1,
+      "description": "Unterstützungsleistungen bei Softwareerstellung mit Spring Boot und React (Konzeption, Programmierung, Implementierung, Dokumentation und Test) gemäß Projekteinzelvertrag Nr. 14085 01/01",
+      "hours": 112,
+      "unit_rate": 85.00,
+      "total_net": 9520.00
+    }
+  ],
+  "totals": {
+    "net": 9520.00,
+    "vat_rate": 19,
+    "vat_amount": 1808.80,
+    "gross": 11328.80
+  },
+  "payment": {
+    "due_date": "15.05.2026",
+    "iban": "DE98 5005 0201 1202 9825 80",
+    "bic": "HELADEF1822",
+    "bank_name": "Frankfurter Sparkasse",
+    "account_holder": "Alex Demian"
+  },
+  "notes": {
+    "kleinunternehmer": false,
+    "reverse_charge": false,
+    "payment_term": "Bitte überweisen Sie den Betrag bis 15.05.2026 ohne Abzug."
+  }
+}
