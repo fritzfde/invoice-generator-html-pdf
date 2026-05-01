@@ -12,8 +12,12 @@ async function generateInvoice(jsonPath, outputPath) {
   data.items[0].unit_rate_formatted = data.items[0].unit_rate.toFixed(2).replace('.', ',');
   data.items[0].total_net_formatted = data.items[0].total_net.toFixed(2).replace('.', ',');
 
-  // Read template
+  // Read template and styles
   let html = fs.readFileSync('template.html', 'utf8');
+  const css = fs.readFileSync('styles.css', 'utf8');
+
+  // Inline CSS
+  html = html.replace('<link rel="stylesheet" href="styles.css">', `<style>${css}</style>`);
 
   // Replace placeholders
   Object.keys(data).forEach(key => {
@@ -30,6 +34,11 @@ async function generateInvoice(jsonPath, outputPath) {
 
   // Special for items.0
   html = html.replace(/{{items\.0\.(\w+)}}/g, (match, prop) => data.items[0][prop]);
+
+  // Write HTML for debugging
+  const htmlPath = outputPath.replace('.pdf', '.html');
+  fs.writeFileSync(htmlPath, html);
+  console.log(`Invoice HTML generated at: ${htmlPath}`);
 
   const browser = await puppeteer.launch();
   const page = await browser.newPage();

@@ -1,4 +1,5 @@
 node_modules/
 *.pdf
+*.html
 invoice-data.json
 .DS_Store
