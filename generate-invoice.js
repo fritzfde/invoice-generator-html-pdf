@@ -1,127 +1,188 @@
 const fs = require('fs');
-const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
+const puppeteer = require('puppeteer');
 
 async function generateInvoice(jsonPath, outputPath) {
   const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([595, 842]); // A4 size in points
-  const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  // Build HTML
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      margin: 0;
+      padding: 100px 50px 100px 100px;
+      width: 595px;
+      display: flex;
+      flex-direction: column;
+    }
+    .sender-line {
+      text-align: left;
+      margin-bottom: 20px;
+      font-size: 11px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 100px;
+      margin-bottom: 40px;
+    }
+    .recipient {
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .sender {
+      text-align: left;
+    }
+    .sender .date {
+      margin-top: 20px;
+      text-align: right;
+    }
+    .date {
+      text-align: right;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+    .number {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .contract {
+      margin-bottom: 20px;
+    }
+    .greeting {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .text1 {
+      margin-bottom: 5px;
+    }
+    .text2 {
+      margin-bottom: 20px;
+    }
+    .table {
+      width: 100%;
+      margin-bottom: 30px;
+    }
+    .table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table th, .table td {
+      padding: 8px;
+      text-align: left;
+      font-size: 12px;
+      vertical-align: top;
+    }
+    .table td p {
+      margin: 5px 0;
+    }
+    .totals {
+      text-align: right;
+      margin-bottom: 20px;
+      font-size: 12px;
+    }
+    .notes {
+      margin-bottom: 50px;
+      font-size: 12px;
+    }
+    .payment-section {
+      position: fixed;
+      bottom: 50px;
+      left: 100px;
+      right: 100px;
+    }
+    .payment-line {
+      width: 100%;
+      border: none;
+      border-top: 1px solid black;
+      margin-bottom: 10px;
+    }
+    .payment {
+      font-size: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="recipient">
+      <div class="sender-line">
+        <u>${data.sender.name} ${data.sender.address} ${data.sender.zip_city}</u>
+      </div>
+      <strong>${data.recipient.company}</strong><br>
+      ${data.recipient.department}<br>
+      ${data.recipient.address}<br>
+      ${data.recipient.zip_city}<br>
+      <!-- ${data.recipient.email} -->
+    </div>
+    <div class="sender">
+      <strong>${data.sender.name}</strong><br>
+      ${data.sender.address}<br>
+      ${data.sender.zip_city}<br>
+      Telefon: ${data.sender.phone}<br>
+      E-Mail: ${data.sender.email}<br>
+      <!-- USt-IdNr.: ${data.sender.ust_id} -->
+      <div class="date"><div style="display: flex; justify-content: space-between;"><span>Rechnungsdatum:</span><span>${data.invoice.date}</span></div></div>
+    </div>
+  </div>
 
-  const { width, height } = page.getSize();
+  <div class="number">Rechnungsnummer: ${data.invoice.number}<br>Projekteinzelvertrag Nr. ${data.contract.project_contract}</div>
+  <div class="contract">zum Rahmenvertrag vom ${data.contract.framework_contract_date}</div>
+  <div class="greeting">Sehr geehrte Damen und Herren,</div>
+  <div class="text1">gemäß Projekteinzelvertrag Nr. ${data.contract.project_contract} erlaube ich mir, Ihnen für den Leistungszeitraum</div>
+  <div class="text2"><span style="color: blue;">${data.invoice.performance_period}</span> folgende Rechnung zu stellen:</div>
+  <div class="table">
+    <table>
+      <tr>
+        <th>Anz.</th>
+        <th>Einheit</th>
+        <th>Beschreibung</th>
+        <th>Einzelpreis</th>
+        <th>Gesamtpreis</th>
+      </tr>
+      ${data.items.map(item => `
+      <tr>
+        <td>${item.hours.toFixed(2).replace('.', ',')}</td>
+        <td>Stunden</td>
+        <td><p>Geleistete Arbeitsstunden gemäß beigefügtem, abgezeichneten Leistungsnachweis:</p><p>Aufsetzung der Entwicklungsumgebung und IDE für Spring Boot und React</p><p>Konzeption, Programmierung, Implementierung von FE + BE Architektur</p><p>AN-6009</p><p>AN-6012</p></td>
+        <td>${item.unit_rate.toFixed(2).replace('.', ',')} €</td>
+        <td>${item.total_net.toFixed(2).replace('.', ',')} €</td>
+      </tr>
+      `).join('')}
+    </table>
+  </div>
+  <div class="totals">
+    Zwischensumme netto: €${data.totals.net.toFixed(2).replace('.', ',')}<br>
+    Umsatzsteuer ${data.totals.vat_rate}%: €${data.totals.vat_amount.toFixed(2).replace('.', ',')}<br>
+    <strong>Gesamtbetrag brutto: €${data.totals.gross.toFixed(2).replace('.', ',')}</strong>
+  </div>
+  <div class="notes">Bitte überweisen Sie den Betrag bis ${data.payment.due_date} ohne Abzug.</div>
+  <div class="payment-section">
+    <hr class="payment-line">
+    <div class="payment">
+      Bankverbindung<br>
+      ${data.payment.bank_name}<br>
+      IBAN: ${data.payment.iban}<br>
+      BIC: ${data.payment.bic}
+    </div>
+  </div>
+</body>
+</html>
+  `;
 
-  // Helper function to draw text
-  function drawText(text, x, y, options = {}) {
-    const font = options.bold ? helveticaBold : helvetica;
-    const size = options.size || 10;
-    page.drawText(text, { x, y, size, font, color: rgb(0, 0, 0) });
-  }
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.setContent(html);
+  await page.pdf({ path: outputPath, format: 'A4', printBackground: true });
+  await browser.close();
 
-  // Helper function to draw right-aligned text
-  function drawTextRight(text, x, y, options = {}) {
-    const font = options.bold ? helveticaBold : helvetica;
-    const size = options.size || 10;
-    const textWidth = font.widthOfTextAtSize(text, size);
-    page.drawText(text, { x: x - textWidth, y, size, font, color: rgb(0, 0, 0) });
-  }
-
-  // Sender info (top right)
-  drawText(data.sender.name, 300, height - 50, { bold: true });
-  drawText(data.sender.address, 300, height - 65);
-  drawText(data.sender.zip_city, 300, height - 80);
-  drawText(`Telefon: ${data.sender.phone}`, 300, height - 95);
-  drawText(`E-Mail: ${data.sender.email}`, 300, height - 110);
-  drawText(`USt-IdNr.: ${data.sender.ust_id}`, 300, height - 125);
-
-  // Recipient info (top left)
-  drawText(data.recipient.company, 50, height - 50, { bold: true });
-  drawText(data.recipient.department, 50, height - 65);
-  drawText(data.recipient.address, 50, height - 80);
-  drawText(data.recipient.zip_city, 50, height - 95);
-  drawText(data.recipient.email, 50, height - 110);
-
-  drawTextRight(`Rechnungsdatum: ${data.invoice.date}`, width - 50, height - 150, { bold: true });
-  drawText(`Rechnungsnummer: ${data.invoice.number} Projekteinzelvertrag Nr. ${data.contract.project_contract}`, 50, height - 165, { bold: true });
-  drawText(`zum Rahmenvertrag vom ${data.contract.framework_contract_date}`, 50, height - 180);
-
-  drawText('Sehr geehrte Damen und Herren,', 50, height - 200);
-  drawText(`gemäß Projekteinzelvertrag Nr. ${data.contract.project_contract} erlaube ich mir, Ihnen für den Leistungszeitraum`, 50, height - 215);
-  drawText(`${data.invoice.performance_period} folgende Rechnung zu stellen:`, 50, height - 230);
-
-  // Table header
-  const tableY = height - 270;
-  drawText('Pos.', 50, tableY, { bold: true });
-  drawText('Beschreibung', 80, tableY, { bold: true });
-  drawText('Stunden', 350, tableY, { bold: true });
-  drawText('Satz', 400, tableY, { bold: true });
-  drawText('Betrag netto', 450, tableY, { bold: true });
-
-  // Draw table lines
-  page.drawLine({ start: { x: 50, y: tableY - 5 }, end: { x: 550, y: tableY - 5 }, thickness: 1 });
-
-  // Items
-  let currentY = tableY - 25;
-  data.items.forEach(item => {
-    drawText(item.position.toString(), 50, currentY);
-    // Wrap description
-    const descLines = wrapText(item.description, 250);
-    descLines.forEach((line, i) => {
-      drawText(line, 80, currentY - i * 12);
-    });
-    drawText(item.hours.toString(), 350, currentY);
-    drawText(`${item.unit_rate.toFixed(2)} €`, 400, currentY);
-    drawText(`${item.total_net.toFixed(2)} €`, 450, currentY);
-    currentY -= Math.max(12, descLines.length * 12) + 5;
-  });
-
-  // Totals
-  currentY -= 20;
-  drawText(`Zwischensumme netto: €${data.totals.net.toFixed(2)}`, 350, currentY);
-  currentY -= 15;
-  drawText(`Umsatzsteuer ${data.totals.vat_rate}%: €${data.totals.vat_amount.toFixed(2)}`, 350, currentY);
-  currentY -= 15;
-  drawText(`Gesamtbetrag brutto: €${data.totals.gross.toFixed(2)}`, 350, currentY, { bold: true });
-
-  // Payment info
-  currentY -= 40;
-  drawText('Zahlungsinformationen:', 50, currentY, { bold: true });
-  currentY -= 15;
-  drawText(`Zahlungsziel: ${data.payment.due_date}`, 50, currentY);
-  currentY -= 15;
-  drawText(`IBAN: ${data.payment.iban}`, 50, currentY);
-  currentY -= 15;
-  drawText(`BIC: ${data.payment.bic}`, 50, currentY);
-  currentY -= 15;
-  drawText(`Kreditinstitut: ${data.payment.bank_name}`, 50, currentY);
-  currentY -= 15;
-  drawText(`Kontoinhaber: ${data.payment.account_holder}`, 50, currentY);
-
-  // Notes
-  currentY -= 40;
-  drawText(data.notes.payment_term, 50, currentY);
-
-  const pdfBytes = await pdfDoc.save();
-  fs.writeFileSync(outputPath, pdfBytes);
   console.log(`Invoice PDF generated at: ${outputPath}`);
 }
 
-function wrapText(text, maxWidth) {
-  const words = text.split(' ');
-  const lines = [];
-  let currentLine = '';
 
-  words.forEach(word => {
-    if ((currentLine + ' ' + word).length * 6 < maxWidth) { // Rough estimate
-      currentLine += (currentLine ? ' ' : '') + word;
-    } else {
-      lines.push(currentLine);
-      currentLine = word;
-    }
-  });
-  lines.push(currentLine);
-  return lines;
-}
 
 // Usage
 const args = process.argv.slice(2);

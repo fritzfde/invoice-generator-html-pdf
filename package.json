@@ -7,8 +7,9 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "pdfjs-dist": "^3.11.174",
+    "docx": "^8.2.2",
     "pdf-lib": "^1.17.1",
-    "docx": "^8.2.2"
+    "pdfjs-dist": "^3.11.174",
+    "puppeteer": "^24.42.0"
   }
 }

@@ -1,0 +1,53 @@
+{
+  "invoice": {
+    "number": "2026-04-001",
+    "date": "01.05.2026",
+    "performance_period": "13.04.2026 – 30.04.2026"
+  },
+  "contract": {
+    "project_contract": "14085 01/01",
+    "framework_contract_date": "19.03.2026"
+  },
+  "sender": {
+    "name": "Your Name",
+    "address": "Your Address",
+    "zip_city": "12345 Your City",
+    "phone": "+49 123 456789",
+    "email": "your.email@example.com",
+    "ust_id": "DE123456789"
+  },
+  "recipient": {
+    "company": "Client Company GmbH",
+    "department": "Accounting",
+    "address": "Client Address",
+    "zip_city": "54321 Client City",
+    "email": "accounting@client.com"
+  },
+  "items": [
+    {
+      "position": 1,
+      "description": "Sample service description",
+      "hours": 100,
+      "unit_rate": 50.00,
+      "total_net": 5000.00
+    }
+  ],
+  "totals": {
+    "net": 5000.00,
+    "vat_rate": 19,
+    "vat_amount": 950.00,
+    "gross": 5950.00
+  },
+  "payment": {
+    "due_date": "15.05.2026",
+    "iban": "DE12 3456 7890 1234 5678 90",
+    "bic": "SAMPLEBIC",
+    "bank_name": "Sample Bank",
+    "account_holder": "Your Name"
+  },
+  "notes": {
+    "kleinunternehmer": false,
+    "reverse_charge": false,
+    "payment_term": "Please transfer the amount by due date without deduction."
+  }
+}
