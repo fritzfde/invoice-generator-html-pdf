@@ -4,6 +4,18 @@ const puppeteer = require('puppeteer');
 async function generateInvoice(jsonPath, outputPath) {
   const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 
+  // Format performance period in German
+  function formatGermanDateRange(range) {
+    const [start, end] = range.split(' – ');
+    const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+    const formatDate = (dateStr) => {
+      const [day, month, year] = dateStr.split('.');
+      return `${day}.${months[parseInt(month) - 1]} ${year}`;
+    };
+    return `${formatDate(start)} – ${formatDate(end)}`;
+  }
+  data.invoice.performance_period_formatted = formatGermanDateRange(data.invoice.performance_period);
+
   // Add formatted fields
   data.totals.net_formatted = data.totals.net.toFixed(2).replace('.', ',');
   data.totals.vat_amount_formatted = data.totals.vat_amount.toFixed(2).replace('.', ',');
