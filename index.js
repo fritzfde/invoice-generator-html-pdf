@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { getDocument } = require('pdfjs-dist');
-const { PDFDocument, rgb } = require('pdf-lib');
+const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
 const { Document, Packer, Paragraph, TextRun } = require('docx');
 
 // Function to extract text items with positions from PDF
@@ -22,6 +22,7 @@ async function extractTextItems(pdfPath) {
       width: item.width,
       height: item.height,
       fontSize: item.transform[0], // scale x
+      fontName: item.fontName || 'Helvetica',
       rotation: Math.atan2(item.transform[2], item.transform[0]) * (180 / Math.PI), // rotation in degrees
       pageIndex: pageIndex,
     }));
@@ -93,16 +94,20 @@ async function fillPDFTemplate(inputPath, outputPath, replacementsPath, docxPath
 
     // Create new PDF
     const pdfDoc = await PDFDocument.create();
+    const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
     for (let pageIndex = 0; pageIndex < pageSizes.length; pageIndex++) {
       const page = pdfDoc.addPage([pageSizes[pageIndex].width, pageSizes[pageIndex].height]);
       const items = itemsByPage[pageIndex] || [];
 
       items.forEach(item => {
+        const font = item.fontName.includes('Bold') ? helveticaBold : helvetica;
         page.drawText(item.text, {
           x: item.x,
           y: item.y,
           size: item.fontSize,
+          font: font,
           color: rgb(0, 0, 0),
           rotate: item.rotation ? { angle: item.rotation * (Math.PI / 180) } : undefined,
         });
