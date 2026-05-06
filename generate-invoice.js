@@ -16,6 +16,16 @@ async function generateInvoice(jsonPath, outputPath) {
   }
   data.invoice.performance_period_formatted = formatGermanDateRange(data.invoice.performance_period);
 
+  // Calculate financial values dynamically
+  data.items.forEach(item => {
+    item.total_net = item.hours * item.unit_rate;
+  });
+
+  // Calculate totals
+  data.totals.net = data.items.reduce((sum, item) => sum + item.total_net, 0);
+  data.totals.vat_amount = data.totals.net * (data.totals.vat_rate / 100);
+  data.totals.gross = data.totals.net + data.totals.vat_amount;
+
   // Function to format numbers with thousand space and comma decimal
   function formatNumber(num) {
     let str = num.toFixed(2);

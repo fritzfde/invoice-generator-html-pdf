@@ -1,8 +1,8 @@
 {
   "invoice": {
-    "number": "2026-04-001",
-    "date": "01.05.2026",
-    "performance_period": "13.04.2026 – 30.04.2026"
+    "number": "2026-05-001",
+    "date": "",
+    "performance_period": "01.05.2026 – 31.05.2026"
   },
   "contract": {
     "project_contract": "14085 01/01",
@@ -26,20 +26,19 @@
   "items": [
     {
       "position": 1,
-      "description": "Unterstützungsleistungen bei Softwareerstellung mit Spring Boot und React (Konzeption, Programmierung, Implementierung, Dokumentation und Test) gemäß Projekteinzelvertrag Nr. 14085 01/01",
+      "description_lines": [
+        "Geleistete Arbeitsstunden gemäß beigefügtem, abgezeichneten Leistungsnachweis:"
+      ],
       "hours": 112,
-      "unit_rate": 85.00,
-      "total_net": 9520.00
+      "unit_rate": 85.00
     }
   ],
   "totals": {
-    "net": 9520.00,
-    "vat_rate": 19,
-    "vat_amount": 1808.80,
-    "gross": 11328.80
+    "vat_rate": 19
   },
+  "currency": "EUR",
   "payment": {
-    "due_date": "15.05.2026",
+    "terms_days": 40,
     "iban": "DE98 5005 0201 1202 9825 80",
     "bic": "HELADEF1822",
     "bank_name": "Frankfurter Sparkasse",

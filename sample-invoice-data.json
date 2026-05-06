@@ -31,15 +31,11 @@
         "Sample service description line 2"
       ],
       "hours": 100,
-      "unit_rate": 50.00,
-      "total_net": 5000.00
+      "unit_rate": 50.00
     }
   ],
   "totals": {
-    "net": 5000.00,
-    "vat_rate": 19,
-    "vat_amount": 950.00,
-    "gross": 5950.00
+    "vat_rate": 19
   },
   "currency": "EUR",
   "payment": {
