@@ -41,7 +41,7 @@ async function generateInvoice(jsonPath, outputPath) {
   data.items[0].unit_rate_formatted = formatNumber(data.items[0].unit_rate);
   data.items[0].total_net_formatted = formatNumber(data.items[0].total_net);
 
-  // Calculate payment due date
+  // Calculate payment due date and generate invoice number
   function calculateDueDate(invoiceDate, termsDays) {
     let date;
     if (!invoiceDate || invoiceDate.trim() === '') {
@@ -52,9 +52,17 @@ async function generateInvoice(jsonPath, outputPath) {
       const currentMonth = (date.getMonth() + 1).toString().padStart(2, '0');
       const currentYear = date.getFullYear();
       data.invoice.date = `${currentDay}.${currentMonth}.${currentYear}`;
+
+      // Generate invoice number from current date: YYYY-MM-001
+      const monthPadded = currentMonth.toString().padStart(2, '0');
+      data.invoice.number = `${currentYear}-${monthPadded}-001`;
     } else {
       const [day, month, year] = invoiceDate.split('.');
       date = new Date(year, month - 1, day);
+
+      // Generate invoice number from provided date: YYYY-MM-001
+      const monthPadded = month.toString().padStart(2, '0');
+      data.invoice.number = `${year}-${monthPadded}-001`;
     }
     date.setDate(date.getDate() + termsDays);
     const dueDay = date.getDate().toString().padStart(2, '0');
