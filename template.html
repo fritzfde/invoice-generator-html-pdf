@@ -7,7 +7,7 @@
   <div class="header">
     <div class="recipient">
       <div class="sender-line">
-        <u>{{sender.name}} {{sender.address}} {{sender.zip_city}}</u>
+        <u>{{sender.name}}, {{sender.address}} {{sender.zip_city}}</u>
       </div>
       <strong>{{recipient.company}}</strong><br>
       {{recipient.department}}<br>
@@ -30,7 +30,7 @@
   <div class="contract">zum Rahmenvertrag vom {{contract.framework_contract_date}}</div>
   <div class="greeting">Sehr geehrte Damen und Herren,</div>
   <div class="text1">gemäß Projekteinzelvertrag Nr. {{contract.project_contract}} erlaube ich mir, Ihnen für den Leistungszeitraum</div>
-  <div class="text2"><span style="color: blue;">{{invoice.performance_period_formatted}}</span> folgende Rechnung zu stellen:</div>
+  <div class="text2"><span class="performance-period">{{invoice.performance_period_formatted}}</span> folgende Rechnung zu stellen:</div>
   <div class="table">
     <table>
       <tr>
@@ -43,26 +43,39 @@
       <tr>
         <td>{{items.0.hours_formatted}}</td>
         <td>Stunden</td>
-        <td><p>Geleistete Arbeitsstunden gemäß beigefügtem, abgezeichneten Leistungsnachweis:</p><p>Aufsetzung der Entwicklungsumgebung und IDE für Spring Boot und React</p><p>Konzeption, Programmierung, Implementierung von FE + BE Architektur</p><p>AN-6009</p><p>AN-6012</p></td>
-        <td>{{items.0.unit_rate_formatted}} €</td>
-        <td>{{items.0.total_net_formatted}} €</td>
+        <td>{{items.0.description_html}}</td>
+         <td class="price">{{items.0.unit_rate_formatted}} {{currency}}</td>
+         <td class="price">{{items.0.total_net_formatted}} {{currency}}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td>Rechnungsbetrag netto<br>+{{totals.vat_rate}}% MwSt.</td>
+        <td></td>
+        <td class="price">{{totals.net_formatted}} {{currency}}<br>{{totals.vat_amount_formatted}} {{currency}}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td><b>Rechnungsbetrag</b></td>
+        <td></td>
+        <td class="price">{{totals.gross_formatted}} {{currency}}</td>
       </tr>
     </table>
   </div>
-  <div class="totals">
-    Zwischensumme netto: €{{totals.net_formatted}}<br>
-    Umsatzsteuer {{totals.vat_rate}}%: €{{totals.vat_amount_formatted}}<br>
-    <strong>Gesamtbetrag brutto: €{{totals.gross_formatted}}</strong>
-  </div>
-  <div class="notes">Bitte überweisen Sie den Betrag bis {{payment.due_date}} ohne Abzug.</div>
   <div class="payment-section">
+  <div class="notes">Bitte überweisen Sie den Betrag bis {{payment.due_date}} ohne Abzug.</div>
     <hr class="payment-line">
-    <div class="payment">
-      Bankverbindung<br>
-      {{payment.bank_name}}<br>
-      IBAN: {{payment.iban}}<br>
-      BIC: {{payment.bic}}
-    </div>
+     <div class="payment-container">
+       <div class="payment">
+         Bankverbindung<br>
+         {{payment.bank_name}}<br>
+         IBAN: {{payment.iban}}<br>
+         BIC: {{payment.bic}}
+       </div>
+       <div class="ust-id">USt-IdNr.: {{sender.ust_id}}</div>
+       <div class="empty-space"></div>
+     </div>
   </div>
 </body>
 </html>

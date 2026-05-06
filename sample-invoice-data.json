@@ -1,7 +1,7 @@
 {
   "invoice": {
     "number": "2026-04-001",
-    "date": "01.05.2026",
+    "date": "",
     "performance_period": "13.04.2026 – 30.04.2026"
   },
   "contract": {
@@ -26,7 +26,10 @@
   "items": [
     {
       "position": 1,
-      "description": "Sample service description",
+      "description_lines": [
+        "Sample service description line 1",
+        "Sample service description line 2"
+      ],
       "hours": 100,
       "unit_rate": 50.00,
       "total_net": 5000.00
@@ -38,8 +41,9 @@
     "vat_amount": 950.00,
     "gross": 5950.00
   },
+  "currency": "EUR",
   "payment": {
-    "due_date": "15.05.2026",
+    "terms_days": 30,
     "iban": "DE12 3456 7890 1234 5678 90",
     "bic": "SAMPLEBIC",
     "bank_name": "Sample Bank",

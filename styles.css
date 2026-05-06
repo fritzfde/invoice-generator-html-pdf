@@ -15,7 +15,7 @@ body {
 .header {
   display: flex;
   justify-content: space-between;
-  margin-top: 100px;
+  margin-top: 80px;
   margin-bottom: 40px;
 }
 .recipient {
@@ -26,7 +26,7 @@ body {
   text-align: left;
 }
 .sender .date {
-  margin-top: 20px;
+  margin-top: 60px;
   text-align: right;
 }
 .date {
@@ -51,6 +51,9 @@ body {
 .text2 {
   margin-bottom: 20px;
 }
+.performance-period {
+  color: blue;
+}
 .table {
   width: 100%;
   margin-bottom: 30px;
@@ -58,12 +61,21 @@ body {
 .table table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 .table th, .table td {
   padding: 8px;
   text-align: left;
-  font-size: 12px;
+  font-size: 14px;
   vertical-align: top;
+}
+.table th:nth-child(1), .table td:nth-child(1) { width: 10%; }
+.table th:nth-child(2), .table td:nth-child(2) { width: 10%; }
+.table th:nth-child(3), .table td:nth-child(3) { width: 50%; }
+.table th:nth-child(4), .table td:nth-child(4) { width: 15%; }
+.table th:nth-child(5), .table td:nth-child(5) { width: 15%; }
+.table .price {
+  white-space: nowrap;
 }
 .table td p {
   margin: 0 0 5px 0;
@@ -74,14 +86,15 @@ body {
   font-size: 12px;
 }
 .notes {
-  margin-bottom: 50px;
-  font-size: 12px;
+  /*margin-bottom: 50px;*/
+  /*font-size: 12px;*/
+  margin: 25px;
 }
 .payment-section {
   position: fixed;
-  bottom: 50px;
-  left: 100px;
-  right: 100px;
+  bottom: 75px;
+  left: 75px;
+  right: 75px;
 }
 .payment-line {
   width: 100%;
@@ -89,6 +102,20 @@ body {
   border-top: 1px solid black;
   margin-bottom: 10px;
 }
+.payment-container {
+  display: flex;
+  align-items: center;
+}
 .payment {
+  flex: 1;
   font-size: 10px;
+  text-align: left;
+}
+.ust-id {
+  flex: 1;
+  font-size: 10px;
+  text-align: center;
+}
+.empty-space {
+  flex: 1;
 }
