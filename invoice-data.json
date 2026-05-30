@@ -1,6 +1,6 @@
 {
   "invoice": {
-    "date": "01.06.2026",
+    "date": "",
     "performance_period": "01.05.2026 – 31.05.2026"
   },
   "contract": {
@@ -28,7 +28,7 @@
       "description_lines": [
         "Geleistete Arbeitsstunden gemäß beigefügtem, abgezeichneten Leistungsnachweis:"
       ],
-      "hours": 160,
+      "hours": 144,
       "unit_rate": 85.00
     }
   ],

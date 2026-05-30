@@ -16,30 +16,40 @@ async function generateInvoice(jsonPath, outputPath) {
   }
   data.invoice.performance_period_formatted = formatGermanDateRange(data.invoice.performance_period);
 
-  // Calculate financial values dynamically
-  data.items.forEach(item => {
-    item.total_net = item.hours * item.unit_rate;
-  });
-
-  // Calculate totals
-  data.totals.net = data.items.reduce((sum, item) => sum + item.total_net, 0);
-  data.totals.vat_amount = data.totals.net * (data.totals.vat_rate / 100);
-  data.totals.gross = data.totals.net + data.totals.vat_amount;
-
-  // Function to format numbers with thousand space and comma decimal
+  // Calculate financial values dynamically and format them
   function formatNumber(num) {
-    let str = num.toFixed(2);
+    let str = Number(num || 0).toFixed(2);
     str = str.replace(/\B(?=(\d{3})+\.)/g, ' ');
     return str.replace('.', ',');
   }
 
-  // Add formatted fields
+  // Ensure totals object exists
+  data.totals = data.totals || {};
+  data.items = Array.isArray(data.items) ? data.items : [];
+
+  // Compute per-item totals and formatted fields
+  data.items.forEach(item => {
+    item.hours = Number(item.hours || 0);
+    item.unit_rate = Number(item.unit_rate || 0);
+    item.total_net = item.hours * item.unit_rate;
+    item.hours_formatted = item.hours.toFixed(2).replace('.', ',');
+    item.unit_rate_formatted = formatNumber(item.unit_rate);
+    item.total_net_formatted = formatNumber(item.total_net);
+    if (item.description_lines) {
+      item.description_html = item.description_lines.map(line => `<p>${line}</p>`).join('');
+    }
+  });
+
+  // Calculate totals derived from items
+  data.totals.net = data.items.reduce((sum, item) => sum + (Number(item.total_net) || 0), 0);
+  data.totals.vat_rate = Number(data.totals.vat_rate || 0);
+  data.totals.vat_amount = data.totals.net * (data.totals.vat_rate / 100);
+  data.totals.gross = data.totals.net + data.totals.vat_amount;
+
+  // Add formatted totals
   data.totals.net_formatted = formatNumber(data.totals.net);
   data.totals.vat_amount_formatted = formatNumber(data.totals.vat_amount);
   data.totals.gross_formatted = formatNumber(data.totals.gross);
-  data.items[0].hours_formatted = data.items[0].hours.toFixed(2).replace('.', ',');
-  data.items[0].unit_rate_formatted = formatNumber(data.items[0].unit_rate);
-  data.items[0].total_net_formatted = formatNumber(data.items[0].total_net);
 
   // Calculate payment due date and generate invoice number
   function calculateDueDate(invoiceDate, termsDays) {
